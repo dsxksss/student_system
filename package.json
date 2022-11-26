@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "jsonfile": "^6.1.0",
+    "scanline": "^1.0.0"
+  },
+  "name": "jsxl_student_system",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT"
+}
