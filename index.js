@@ -1,31 +1,54 @@
-const path = require("path");
+// 全部功能选项
+const storageStudent = require("./storageStudent");
+const listStudents = require("./listStudents");
+const findStudent = require("./findStudent");
+const removeStudent = require("./removeStudent");
+const removeAll = require("./removeAll");
+const exit = require("./exit");
+const selects = {
+  //  "1": "录入学生",
+  "1": storageStudent,
+  // "2": "列出全部学生数据",
+  "2": listStudents,
+  // "3": "查找学生",
+  "3": findStudent,
+  // "4": "删除学生",
+  "4": removeStudent,
+  // "5": "删除全部数据",
+  "5": removeAll,
+  // "6": "结束程序",
+  "6": exit,
+};
+
+// 显示菜单界面
 const showUi = require("./ui");
-const jsonfile = require("jsonfile");
+showUi();
+
+// 组织程序的"整体"运行逻辑
 const scanline = require("scanline");
-const { existsSync } = require("fs");
-
-// 数据文件保存路径
-const DATAPATH = path.join(__dirname, "student.json");
-(async () => {
-  // 显示菜单界面
-  showUi();
-
-  // 读取用户输入
-  const name = await scanline("请输入你的姓名");
-  const age = await scanline("请输入你的年龄:");
-  const student = {
-    name,
-    age,
-  };
-
-  let oldData = [];
-  // 判断是否已存在之前存入的数据
-  if (existsSync(DATAPATH)) {
-    // 如果存在的话则读取并且保存到oldData变量里
-    oldData = jsonfile.readFileSync(DATAPATH);
+const run = async () => {
+  const select = await scanline("请输入你的选项 \033[1m\033[34m-> \033[0m");
+  // 匹配用户按下选项后触发对应的功能
+  if (selects[select] != undefined) {
+    // 因为触发的是一个函数所以得在后面加上()号
+    selects[select]();
+  } else {
+    console.log("选择错误,请重新运行该程序");
+    // 如果选择错误则重新运行程序
+    run();
   }
+};
 
-  // 合并存入新老数据
-  jsonfile.writeFileSync(DATAPATH, [...oldData, student]);
-  console.log("\033[32m数据已保存\033[0m");
-})();
+// 开始运行
+run();
+// 虽然可以使用switch方法,但是该方法过于庞杂
+
+// switch (select) {
+//   case "1":
+//     selects.storageStudent();
+//     break;
+//   case "2":
+//     ....
+//   default:
+//     console.log("选择错误,请重新运行该程序");
+// }
